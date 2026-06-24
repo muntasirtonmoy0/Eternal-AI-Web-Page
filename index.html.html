@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eternal AI</title>
+    <!-- 🖼️ Custom Tab Logo Link (Make sure your logo image is named logo.png inside your GitHub repo) -->
     <link rel="icon" type="image/png" href="logo.png">
     <style>
         * {
@@ -33,7 +34,7 @@
         }
 
         @media (max-width: 768px) {
-            .sidebar { display: none; } /* Hides on mobile screens for better workspace */
+            .sidebar { display: none; } /* Hides on mobile screens for a better layout */
         }
 
         .new-chat-btn {
@@ -60,7 +61,7 @@
             padding-left: 10px;
         }
 
-        /* 💬 Main Workspace Arena */
+        /* 💬 Main Workspace Area */
         .main-chat-container {
             flex: 1;
             display: flex;
@@ -70,7 +71,7 @@
             background-color: #131314;
         }
 
-        /* Center Dashboard Grid Area */
+        /* Chat Log Display Area */
         .chat-stream {
             flex: 1;
             overflow-y: auto;
@@ -88,7 +89,7 @@
             gap: 30px;
         }
 
-        /* 🚀 Empty State Welcome Landing (Like Gemini/ChatGPT) */
+        /* 🚀 Welcome Screen (Like Gemini/ChatGPT) */
         .welcome-screen {
             display: flex;
             flex-direction: column;
@@ -158,7 +159,7 @@
             border-radius: 24px;
         }
 
-        /* 💊 Center Capsule Footer Input Bar */
+        /* 💊 Center Capsule Input Bar */
         .input-form-area {
             padding: 20px;
             display: flex;
@@ -219,6 +220,7 @@
 </head>
 <body>
 
+    <!-- Left Sidebar Menu -->
     <div class="sidebar">
         <button class="new-chat-btn" onclick="window.location.reload()">
             <span>＋</span> New Chat
@@ -228,19 +230,22 @@
         </div>
     </div>
 
+    <!-- Main Chat Workspace -->
     <div class="main-chat-container">
         
         <div class="chat-stream" id="chat-stream">
             <div class="messages-wrapper" id="messages-wrapper">
                 
+                <!-- Dynamic Welcome Message Heading -->
                 <div class="welcome-screen" id="welcome-screen">
                     <img src="logo.png" class="welcome-logo" alt="" onerror="this.style.display='none'">
-                    <h1>Hi Muntasir, what's the move?</h1>
+                    <h1>Loading system...</h1>
                 </div>
 
             </div>
         </div>
 
+        <!-- Center Capsule Input Field -->
         <div class="input-form-area">
             <div class="input-capsule">
                 <input type="text" id="user-input" placeholder="Ask Eternal AI..." autocomplete="off">
@@ -251,7 +256,7 @@
     </div>
 
     <script>
-        // 🌐 Paste your XenonHost API network endpoint layout address string right here
+        // 🌐 IMPORTANT: Change this address to match your XenonHost connection network link!
         const BACKEND_URL = 'http://YOUR_XENONHOST_IP_OR_DOMAIN:8080/chat'; 
 
         const stream = document.getElementById('chat-stream');
@@ -260,6 +265,29 @@
         const sendBtn = document.getElementById('send-btn');
         const welcomeScreen = document.getElementById('welcome-screen');
 
+        // ✨ Automatically ask for and remember the user's name
+        function handleUserGreeting() {
+            let savedName = localStorage.getItem('eternal_user_name');
+            const welcomeHeading = welcomeScreen.querySelector('h1');
+
+            if (!savedName) {
+                savedName = prompt("Welcome to Eternal AI! What is your name?");
+                
+                if (!savedName || savedName.trim() === "") {
+                    savedName = "Friend";
+                } else {
+                    savedName = savedName.trim();
+                }
+                localStorage.setItem('eternal_user_name', savedName);
+            }
+
+            welcomeHeading.textContent = `Hi ${savedName}, what's the move?`;
+        }
+
+        // Run name checker as soon as the page loads up
+        handleUserGreeting();
+
+        // Listen for "Enter" key presses to send text fast
         userInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !sendBtn.disabled) {
                 sendMessage();
@@ -270,19 +298,19 @@
             const text = userInput.value.trim();
             if (!text) return;
 
-            // Hide the center welcome hero text on first prompt query entry
+            // Hide the center welcome header layout on the first question input
             if (welcomeScreen) {
                 welcomeScreen.style.display = 'none';
             }
 
-            // Append User prompt bubble block
+            // Put user's bubble text on screen
             appendMessage(text, 'user');
             userInput.value = '';
             
             userInput.disabled = true;
             sendBtn.disabled = true;
 
-            // Append temporary bot stream loader block
+            // Create loading prompt indicator
             const loadingBubble = appendMessage('Thinking...', 'bot');
 
             try {
@@ -297,11 +325,11 @@
                 if (data.reply) {
                     loadingBubble.textContent = data.reply;
                 } else {
-                    loadingBubble.textContent = "Error: Unrecognized API schema return.";
+                    loadingBubble.textContent = "Error: Unrecognized API layout reply data structure.";
                 }
             } catch (error) {
                 console.error(error);
-                loadingBubble.textContent = "Unable to route message payload to local XenonHost container network nodes.";
+                loadingBubble.textContent = "Unable to process connection request. Verify backend port configs are operational.";
             }
 
             userInput.disabled = false;
@@ -333,7 +361,7 @@
             }
 
             wrapper.appendChild(row);
-            stream.scrollTop = stream.scrollHeight;
+            stream.scrollTop = stream.scrollHeight; // Keep view auto-scrolled down
             return bubble;
         }
     </script>
