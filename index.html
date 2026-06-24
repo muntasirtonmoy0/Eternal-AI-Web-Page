@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eternal AI</title>
-    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="icon" type="image/png" href="/logo.png">
     <style>
         * {
             box-sizing: border-box;
@@ -99,11 +99,12 @@
         }
 
         .welcome-logo {
-            width: 60px;
-            height: 60px;
+            width: 70px;
+            height: 70px;
             margin-bottom: 20px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid #2d2f31;
         }
 
         .welcome-screen h1 {
@@ -143,6 +144,7 @@
 
         .avatar.bot-avatar {
             border: 1px solid #2d2f31;
+            background-color: #1e1f20;
         }
 
         .bubble {
@@ -236,7 +238,7 @@
             <div class="messages-wrapper" id="messages-wrapper">
                 
                 <div class="welcome-screen" id="welcome-screen">
-                    <img src="logo.png" class="welcome-logo" alt="" onerror="this.style.display='none'">
+                    <img src="/logo.png" class="welcome-logo" alt="Logo">
                     <h1>Loading system...</h1>
                 </div>
 
@@ -287,17 +289,12 @@
                 "How can I assist your workflow today?"
             ];
 
-            // Select one helper string completely at random
             const randomPhrase = setupSentences[Math.floor(Math.random() * setupSentences.length)];
-
-            // Combine the visitor name with the random option cleanly
             welcomeHeading.textContent = `Hi ${savedName}, ${randomPhrase}`;
         }
 
-        // Run name checker as soon as the page loads up
         handleUserGreeting();
 
-        // Listen for "Enter" key presses to send text fast
         userInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !sendBtn.disabled) {
                 sendMessage();
@@ -308,19 +305,16 @@
             const text = userInput.value.trim();
             if (!text) return;
 
-            // Hide the center welcome header layout on the first question input
             if (welcomeScreen) {
                 welcomeScreen.style.display = 'none';
             }
 
-            // Put user's bubble text on screen
             appendMessage(text, 'user');
             userInput.value = '';
             
             userInput.disabled = true;
             sendBtn.disabled = true;
 
-            // Create loading prompt indicator
             const loadingBubble = appendMessage('Thinking...', 'bot');
 
             try {
@@ -351,11 +345,11 @@
             const row = document.createElement('div');
             row.classList.add('message-row', sender === 'user' ? 'user-row' : 'bot-row');
 
-            // 🤖 IF BOT: Create a image thumbnail avatar instead of the fallback text node
+            // 🤖 IF BOT: Uses absolute root path routing link for the image file
             if (sender === 'bot') {
                 const avatarImg = document.createElement('img');
                 avatarImg.classList.add('avatar', 'bot-avatar');
-                avatarImg.src = 'logo.png'; 
+                avatarImg.src = '/logo.png'; 
                 avatarImg.alt = 'AI';
                 row.appendChild(avatarImg);
             }
@@ -373,7 +367,7 @@
             }
 
             wrapper.appendChild(row);
-            stream.scrollTop = stream.scrollHeight; // Keep view auto-scrolled down
+            stream.scrollTop = stream.scrollHeight;
             return bubble;
         }
     </script>
