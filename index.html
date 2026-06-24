@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eternal AI</title>
-    <!-- 🖼️ Custom Tab Logo Link (Make sure your logo image is named logo.png inside your GitHub repo) -->
     <link rel="icon" type="image/png" href="logo.png">
     <style>
         * {
@@ -104,6 +103,7 @@
             height: 60px;
             margin-bottom: 20px;
             border-radius: 50%;
+            object-fit: cover;
         }
 
         .welcome-screen h1 {
@@ -138,10 +138,11 @@
             font-size: 0.8rem;
             font-weight: bold;
             flex-shrink: 0;
+            object-fit: cover; /* 📐 Fixes thumbnail cropping issues inside circles */
         }
 
         .avatar.bot-avatar {
-            background-color: #9b51e0;
+            border: 1px solid #2d2f31;
         }
 
         .bubble {
@@ -220,7 +221,6 @@
 </head>
 <body>
 
-    <!-- Left Sidebar Menu -->
     <div class="sidebar">
         <button class="new-chat-btn" onclick="window.location.reload()">
             <span>＋</span> New Chat
@@ -230,13 +230,11 @@
         </div>
     </div>
 
-    <!-- Main Chat Workspace -->
     <div class="main-chat-container">
         
         <div class="chat-stream" id="chat-stream">
             <div class="messages-wrapper" id="messages-wrapper">
                 
-                <!-- Dynamic Welcome Message Heading -->
                 <div class="welcome-screen" id="welcome-screen">
                     <img src="logo.png" class="welcome-logo" alt="" onerror="this.style.display='none'">
                     <h1>Loading system...</h1>
@@ -245,7 +243,6 @@
             </div>
         </div>
 
-        <!-- Center Capsule Input Field -->
         <div class="input-form-area">
             <div class="input-capsule">
                 <input type="text" id="user-input" placeholder="Ask Eternal AI..." autocomplete="off">
@@ -265,7 +262,7 @@
         const sendBtn = document.getElementById('send-btn');
         const welcomeScreen = document.getElementById('welcome-screen');
 
-        // ✨ Automatically ask for and remember the user's name
+        // ✨ Automatically ask for, remember, and randomly greet users
         function handleUserGreeting() {
             let savedName = localStorage.getItem('eternal_user_name');
             const welcomeHeading = welcomeScreen.querySelector('h1');
@@ -281,7 +278,20 @@
                 localStorage.setItem('eternal_user_name', savedName);
             }
 
-            welcomeHeading.textContent = `Hi ${savedName}, what's the move?`;
+            // 🎲 Array of randomized custom help sub-phrases
+            const setupSentences = [
+                "How can I help you?",
+                "What do you need today?",
+                "Is there any problem that I can solve?",
+                "What's on your mind?",
+                "How can I assist your workflow today?"
+            ];
+
+            // Select one helper string completely at random
+            const randomPhrase = setupSentences[Math.floor(Math.random() * setupSentences.length)];
+
+            // Combine the visitor name with the random option cleanly
+            welcomeHeading.textContent = `Hi ${savedName}, ${randomPhrase}`;
         }
 
         // Run name checker as soon as the page loads up
@@ -341,11 +351,13 @@
             const row = document.createElement('div');
             row.classList.add('message-row', sender === 'user' ? 'user-row' : 'bot-row');
 
+            // 🤖 IF BOT: Create a image thumbnail avatar instead of the fallback text node
             if (sender === 'bot') {
-                const avatar = document.createElement('div');
-                avatar.classList.add('avatar', 'bot-avatar');
-                avatar.textContent = 'AI';
-                row.appendChild(avatar);
+                const avatarImg = document.createElement('img');
+                avatarImg.classList.add('avatar', 'bot-avatar');
+                avatarImg.src = 'logo.png'; 
+                avatarImg.alt = 'AI';
+                row.appendChild(avatarImg);
             }
 
             const bubble = document.createElement('div');
