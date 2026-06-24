@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/chat",
+      "destination": "http://n1.xrstudio.top:2108/chat"
+    }
+  ]
+}
