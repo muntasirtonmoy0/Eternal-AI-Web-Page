@@ -3,183 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eternal AI - Chat Interface</title>
+    <title>Eternal AI</title>
+    <link rel="icon" type="image/png" href="logo.png">
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background-color: #1a1a1c;
-            color: #f0f0f2;
+            background-color: #131314;
+            color: #e3e3e3;
             display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
+            overflow: hidden;
         }
 
-        .chat-container {
-            width: 100%;
-            max-width: 600px;
-            height: 90vh;
-            background-color: #232326;
-            border-radius: 12px;
+        /* 📁 Left Sidebar Navigation (ChatGPT/Gemini Style) */
+        .sidebar {
+            width: 260px;
+            background-color: #1e1f20;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            border: 1px solid #323236;
+            padding: 20px 12px;
+            justify-content: space-between;
+            border-right: 1px solid #2d2f31;
         }
 
-        /* Header Bar */
-        .chat-header {
-            background-color: #2d2d31;
-            padding: 15px 20px;
+        @media (max-width: 768px) {
+            .sidebar { display: none; } /* Hides on mobile screens for better workspace */
+        }
+
+        .new-chat-btn {
+            background-color: #1a1a1c;
+            border: 1px solid #3c4043;
+            color: #ffffff;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-weight: 500;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            border-bottom: 1px solid #323236;
-        }
-
-        .chat-header .status-dot {
-            width: 10px;
-            height: 10px;
-            background-color: #43b581;
-            border-radius: 50%;
-            margin-right: 10px;
-            box-shadow: 0 0 8px #43b581;
-        }
-
-        .chat-header h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #ffffff;
-        }
-
-        /* Chat Log Display Area */
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        /* Scrollbar styling */
-        .chat-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-        .chat-messages::-webkit-scrollbar-thumb {
-            background-color: #3e3e44;
-            border-radius: 3px;
-        }
-
-        /* Message Bubbles Base */
-        .message {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 8px;
-            line-height: 1.5;
-            font-size: 0.95rem;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-        }
-
-        /* User Message Style */
-        .message.user {
-            background-color: #007acc;
-            color: #ffffff;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-        }
-
-        /* AI Message Style */
-        .message.bot {
-            background-color: #2f2f33;
-            color: #e2e2e6;
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-            border: 1px solid #3e3e44;
-        }
-
-        /* Input Box Footer Bar */
-        .chat-input-area {
-            background-color: #2d2d31;
-            padding: 15px;
-            display: flex;
             gap: 10px;
-            border-top: 1px solid #323236;
-        }
-
-        .chat-input-area input {
-            flex: 1;
-            background-color: #1a1a1c;
-            border: 1px solid #3e3e44;
-            border-radius: 6px;
-            padding: 12px;
-            color: #ffffff;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .chat-input-area input:focus {
-            border-color: #007acc;
-        }
-
-        .chat-input-area button {
-            background-color: #007acc;
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
-            padding: 0 20px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
             transition: background-color 0.2s;
         }
 
-        .chat-input-area button:hover {
-            background-color: #0062a3;
+        .new-chat-btn:hover {
+            background-color: #2b2c2e;
         }
 
-        .chat-input-area button:disabled {
-            background-color: #4e4e54;
+        .sidebar-footer {
+            font-size: 0.85rem;
+            color: #9aa0a6;
+            padding-left: 10px;
+        }
+
+        /* 💬 Main Workspace Arena */
+        .main-chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            background-color: #131314;
+        }
+
+        /* Center Dashboard Grid Area */
+        .chat-stream {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .messages-wrapper {
+            width: 100%;
+            max-width: 720px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* 🚀 Empty State Welcome Landing (Like Gemini/ChatGPT) */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15vh;
+            text-align: center;
+        }
+
+        .welcome-logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 20px;
+            border-radius: 50%;
+        }
+
+        .welcome-screen h1 {
+            font-size: 2.5rem;
+            font-weight: 500;
+            background: linear-gradient(70deg, #4285f4, #9b51e0, #e91e63);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        /* Message Box Components */
+        .message-row {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            align-items: flex-start;
+        }
+
+        .message-row.user-row {
+            justify-content: flex-end;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #3e3e42;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .avatar.bot-avatar {
+            background-color: #9b51e0;
+        }
+
+        .bubble {
+            max-width: calc(100% - 60px);
+            line-height: 1.6;
+            font-size: 1rem;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            padding-top: 4px;
+        }
+
+        .user-row .bubble {
+            background-color: #2b2a2a;
+            padding: 12px 20px;
+            border-radius: 24px;
+        }
+
+        /* 💊 Center Capsule Footer Input Bar */
+        .input-form-area {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            background-color: #131314;
+        }
+
+        .input-capsule {
+            width: 100%;
+            max-width: 720px;
+            background-color: #1e1f20;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            padding: 6px 14px 6px 24px;
+            border: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .input-capsule:focus-within {
+            border-color: #3c4043;
+            background-color: #232425;
+        }
+
+        .input-capsule input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-size: 1rem;
+            height: 44px;
+        }
+
+        .input-capsule button {
+            background-color: #303134;
+            color: #ffffff;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .input-capsule button:hover {
+            background-color: #3c4043;
+        }
+
+        .input-capsule button:disabled {
+            opacity: 0.3;
             cursor: not-allowed;
         }
     </style>
 </head>
 <body>
 
-    <div class="chat-container">
-        <div class="chat-header">
-            <div class="status-dot"></div>
-            <h2>Eternal AI System</h2>
-        </div>
-
-        <div class="chat-messages" id="chat-messages">
-            <div class="message bot">Hello! I am Eternal AI. How can I help you today?</div>
-        </div>
-
-        <div class="chat-input-area">
-            <input type="text" id="user-input" placeholder="Ask Eternal AI anything..." autocomplete="off">
-            <button id="send-btn" onclick="sendMessage()">Send</button>
+    <div class="sidebar">
+        <button class="new-chat-btn" onclick="window.location.reload()">
+            <span>＋</span> New Chat
+        </button>
+        <div class="sidebar-footer">
+            <p>Eternal AI Core v1.0</p>
         </div>
     </div>
 
+    <div class="main-chat-container">
+        
+        <div class="chat-stream" id="chat-stream">
+            <div class="messages-wrapper" id="messages-wrapper">
+                
+                <div class="welcome-screen" id="welcome-screen">
+                    <img src="logo.png" class="welcome-logo" alt="" onerror="this.style.display='none'">
+                    <h1>Hi Muntasir, what's the move?</h1>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="input-form-area">
+            <div class="input-capsule">
+                <input type="text" id="user-input" placeholder="Ask Eternal AI..." autocomplete="off">
+                <button id="send-btn" onclick="sendMessage()">➔</button>
+            </div>
+        </div>
+
+    </div>
+
     <script>
-        // 🌐 REPLACE THIS WITH YOUR BACKEND WEB ADDRESS ONCE HOSTED
-        // For local machine testing, you use 'http://localhost:8080/chat'
+        // 🌐 Paste your XenonHost API network endpoint layout address string right here
         const BACKEND_URL = 'http://YOUR_XENONHOST_IP_OR_DOMAIN:8080/chat'; 
 
-        const chatMessages = document.getElementById('chat-messages');
+        const stream = document.getElementById('chat-stream');
+        const wrapper = document.getElementById('messages-wrapper');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
+        const welcomeScreen = document.getElementById('welcome-screen');
 
-        // Allow hitting "Enter" key to send messages
         userInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !sendBtn.disabled) {
                 sendMessage();
@@ -190,55 +270,71 @@
             const text = userInput.value.trim();
             if (!text) return;
 
-            // 1. Display User Message on Screen
+            // Hide the center welcome hero text on first prompt query entry
+            if (welcomeScreen) {
+                welcomeScreen.style.display = 'none';
+            }
+
+            // Append User prompt bubble block
             appendMessage(text, 'user');
             userInput.value = '';
             
-            // Disable inputs while AI is thinking
             userInput.disabled = true;
             sendBtn.disabled = true;
 
-            // 2. Display a temporary placeholder for the Bot loading
-            const loadingDiv = appendMessage('Thinking...', 'bot');
+            // Append temporary bot stream loader block
+            const loadingBubble = appendMessage('Thinking...', 'bot');
 
             try {
-                // 3. Make the API Web request to your server
                 const response = await fetch(BACKEND_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: text })
                 });
 
                 const data = await response.json();
                 
-                // 4. Update the placeholder text with the actual Gemini response
                 if (data.reply) {
-                    loadingDiv.textContent = data.reply;
-                } else if (data.error) {
-                    loadingDiv.textContent = "Error: Unable to process prompt.";
+                    loadingBubble.textContent = data.reply;
+                } else {
+                    loadingBubble.textContent = "Error: Unrecognized API schema return.";
                 }
             } catch (error) {
-                console.error('Connection Error:', error);
-                loadingDiv.textContent = "Could not connect to Eternal AI network server.";
+                console.error(error);
+                loadingBubble.textContent = "Unable to route message payload to local XenonHost container network nodes.";
             }
 
-            // Re-enable inputs
             userInput.disabled = false;
             sendBtn.disabled = false;
             userInput.focus();
         }
 
         function appendMessage(text, sender) {
-            const msgDiv = document.createElement('div');
-            msgDiv.classList.add('message', sender);
-            msgDiv.textContent = text;
-            chatMessages.appendChild(msgDiv);
-            
-            // Auto-scroll screen down to the newest message seamlessly
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            return msgDiv;
+            const row = document.createElement('div');
+            row.classList.add('message-row', sender === 'user' ? 'user-row' : 'bot-row');
+
+            if (sender === 'bot') {
+                const avatar = document.createElement('div');
+                avatar.classList.add('avatar', 'bot-avatar');
+                avatar.textContent = 'AI';
+                row.appendChild(avatar);
+            }
+
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble');
+            bubble.textContent = text;
+            row.appendChild(bubble);
+
+            if (sender === 'user') {
+                const avatar = document.createElement('div');
+                avatar.classList.add('avatar');
+                avatar.textContent = 'U';
+                row.appendChild(avatar);
+            }
+
+            wrapper.appendChild(row);
+            stream.scrollTop = stream.scrollHeight;
+            return bubble;
         }
     </script>
 </body>
