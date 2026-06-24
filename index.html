@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eternal AI</title>
-    <link rel="icon" type="image/png" href="/logo.png">
+    <link rel="icon" type="image/png" href="https://cdn.discordapp.com/attachments/1506101332317175849/1519399445576552628/logo.png?ex=6a3d6a80&is=6a3c1900&hm=f169b022b0ca3fa75908615dbb9adc355b6bb69b5dd4617e82baa64c06ad8faf">
     <style>
         * {
             box-sizing: border-box;
@@ -33,7 +33,7 @@
         }
 
         @media (max-width: 768px) {
-            .sidebar { display: none; } /* Hides on mobile screens for a better layout */
+            .sidebar { display: none; } 
         }
 
         .new-chat-btn {
@@ -70,7 +70,6 @@
             background-color: #131314;
         }
 
-        /* Chat Log Display Area */
         .chat-stream {
             flex: 1;
             overflow-y: auto;
@@ -88,7 +87,7 @@
             gap: 30px;
         }
 
-        /* 🚀 Welcome Screen (Like Gemini/ChatGPT) */
+        /* 🚀 Welcome Screen */
         .welcome-screen {
             display: flex;
             flex-direction: column;
@@ -139,7 +138,7 @@
             font-size: 0.8rem;
             font-weight: bold;
             flex-shrink: 0;
-            object-fit: cover; /* 📐 Fixes thumbnail cropping issues inside circles */
+            object-fit: cover; 
         }
 
         .avatar.bot-avatar {
@@ -238,7 +237,7 @@
             <div class="messages-wrapper" id="messages-wrapper">
                 
                 <div class="welcome-screen" id="welcome-screen">
-                    <img src="/logo.png" class="welcome-logo" alt="Logo">
+                    <img src="https://cdn.discordapp.com/attachments/1506101332317175849/1519399445576552628/logo.png?ex=6a3d6a80&is=6a3c1900&hm=f169b022b0ca3fa75908615dbb9adc355b6bb69b5dd4617e82baa64c06ad8faf" class="welcome-logo" alt="Logo">
                     <h1>Loading system...</h1>
                 </div>
 
@@ -255,8 +254,8 @@
     </div>
 
     <script>
-        // 🌐 IMPORTANT: Change this address to match your XenonHost connection network link!
-        const BACKEND_URL = 'http://n1.xrstudio.top:2108/chat'; 
+        // 🔒 Fixed Security Wall: Routes the HTTP link safely through an HTTPS CORS proxy middleman!
+        const BACKEND_URL = 'https://corsproxy.io/?' + encodeURIComponent('http://n1.xrstudio.top:2108/chat'); 
 
         const stream = document.getElementById('chat-stream');
         const wrapper = document.getElementById('messages-wrapper');
@@ -264,14 +263,12 @@
         const sendBtn = document.getElementById('send-btn');
         const welcomeScreen = document.getElementById('welcome-screen');
 
-        // ✨ Automatically ask for, remember, and randomly greet users
         function handleUserGreeting() {
             let savedName = localStorage.getItem('eternal_user_name');
             const welcomeHeading = welcomeScreen.querySelector('h1');
 
             if (!savedName) {
                 savedName = prompt("Welcome to Eternal AI! What is your name?");
-                
                 if (!savedName || savedName.trim() === "") {
                     savedName = "Friend";
                 } else {
@@ -280,7 +277,6 @@
                 localStorage.setItem('eternal_user_name', savedName);
             }
 
-            // 🎲 Array of randomized custom help sub-phrases
             const setupSentences = [
                 "How can I help you?",
                 "What do you need today?",
@@ -345,11 +341,11 @@
             const row = document.createElement('div');
             row.classList.add('message-row', sender === 'user' ? 'user-row' : 'bot-row');
 
-            // 🤖 IF BOT: Uses absolute root path routing link for the image file
             if (sender === 'bot') {
                 const avatarImg = document.createElement('img');
                 avatarImg.classList.add('avatar', 'bot-avatar');
-                avatarImg.src = '/logo.png'; 
+                // 🤖 Fixed: Dynamically copies the secure link from the tab icon definition
+                avatarImg.src = document.querySelector('link[rel="icon"]').getAttribute('href'); 
                 avatarImg.alt = 'AI';
                 row.appendChild(avatarImg);
             }
